@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BuaPass — พาสปอร์ตกิจกรรมบัว</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+Thai+2:wght@500;600;700;800&family=Mali:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app">
+
+    <!-- floating sky -->
+    <div class="sky-bg" aria-hidden="true">
+      <span class="cloud c1"></span>
+      <span class="cloud c2"></span>
+      <span class="cloud c3"></span>
+    </div>
+
+    <!-- ===== Header ===== -->
+    <header class="app-bar">
+      <div class="brand">
+        <span class="brand-mark">🪷</span>
+        <div class="brand-text">
+          <h1>BuaPass</h1>
+          <p>พาสปอร์ตกิจกรรมบึงบัว</p>
+        </div>
+      </div>
+      <div class="wallet" id="wallet">
+        <span class="wallet-coin">⭐</span>
+        <div class="wallet-text">
+          <span class="wallet-label">คะแนน</span>
+          <span class="wallet-value" id="walletValue">0</span>
+        </div>
+      </div>
+    </header>
+
+    <main class="screen-wrap">
+
+      <!-- ============================================================= -->
+      <!-- SCREEN 1 : แผนที่จุดฐานถ่ายรูป                                  -->
+      <!-- ============================================================= -->
+      <section class="screen is-active" id="screen-map" aria-label="แผนที่จุดฐาน">
+        <div class="screen-head">
+          <h2><span class="head-emoji">🗺️</span> แผนที่จุดฐาน</h2>
+          <p>แตะหมุดบนแผนที่เพื่อดูรายละเอียดของแต่ละจุดฐานถ่ายรูป</p>
+        </div>
+
+        <div class="mascot-tip">
+          <span class="mascot">🦆</span>
+          <p class="bubble">สวัสดีจ้า! เก็บครบทั้ง 6 จุดฐานรับโบนัสพิเศษนะ</p>
+        </div>
+
+        <div class="map" id="map">
+          <div class="map-inner">
+            <span class="map-sun"></span>
+            <span class="map-cloud mc1"></span>
+            <span class="map-cloud mc2"></span>
+            <span class="bird b1"></span>
+            <span class="bird b2"></span>
+            <div class="lake"></div>
+            <span class="ripple r1"></span>
+            <span class="ripple r2"></span>
+            <span class="lily l1">🪷</span>
+            <span class="lily l2">🌸</span>
+            <span class="lily l3">🪷</span>
+            <span class="boat">🛶</span>
+            <!-- pins injected by app.js -->
+          </div>
+          <div class="map-legend">
+            <span><i class="dot done"></i> เช็คอินแล้ว</span>
+            <span><i class="dot"></i> ยังไม่เช็คอิน</span>
+          </div>
+        </div>
+
+        <div class="station-list" id="stationList"><!-- injected --></div>
+      </section>
+
+      <!-- ============================================================= -->
+      <!-- SCREEN 2 : คลังความรู้                                          -->
+      <!-- ============================================================= -->
+      <section class="screen" id="screen-learn" aria-label="คลังความรู้">
+        <div class="screen-head">
+          <h2><span class="head-emoji">📚</span> คลังความรู้บึงบัว</h2>
+          <p>เกร็ดความรู้เรื่องบัว นก และการอนุรักษ์บึงน้ำ</p>
+        </div>
+
+        <div class="mascot-tip">
+          <span class="mascot">🦉</span>
+          <p class="bubble">อ่านจบแล้วเลื่อนลงไปทำแบบทดสอบท้ายหน้า รับคะแนนโบนัสได้เลย!</p>
+        </div>
+
+        <div class="fact-card" id="factCard">
+          <span class="fact-badge">💡 เกร็ดน่ารู้</span>
+          <p class="fact-text" id="factText"></p>
+          <button class="fact-shuffle" id="factShuffle">🔀 สุ่มเกร็ดใหม่</button>
+        </div>
+
+        <h3 class="list-title">📄 บทความความรู้</h3>
+        <div class="kb" id="kb"><!-- injected --></div>
+
+        <h3 class="list-title">🧠 แบบทดสอบความรู้</h3>
+        <div class="quiz-card" id="quizCard"><!-- injected --></div>
+      </section>
+
+      <!-- ============================================================= -->
+      <!-- SCREEN 3 : คะแนนที่ได้จากกิจกรรม                                -->
+      <!-- ============================================================= -->
+      <section class="screen" id="screen-points" aria-label="คะแนนของฉัน">
+        <div class="screen-head">
+          <h2><span class="head-emoji">⭐</span> คะแนนของฉัน</h2>
+          <p>สรุปคะแนนที่ได้จากการทำกิจกรรมในแต่ละจุดฐาน</p>
+        </div>
+
+        <div class="mascot-tip">
+          <span class="mascot">🐸</span>
+          <p class="bubble">ทำกิจกรรมครบทุกจุดเพื่อเลื่อนขั้นเป็น "เพื่อนแท้บึงบัว"!</p>
+        </div>
+
+        <div class="score-card">
+          <span class="score-star">⭐</span>
+          <div class="score-ring" id="scoreRing">
+            <div class="score-ring-inner">
+              <span class="score-big" id="scoreBig">0</span>
+              <span class="score-unit">คะแนน</span>
+            </div>
+          </div>
+          <div class="score-meta">
+            <div>
+              <span class="score-meta-num" id="checkinCount">0</span>
+              <span class="score-meta-label">จุดที่เช็คอิน</span>
+            </div>
+            <div>
+              <span class="score-meta-num" id="stationTotal">0</span>
+              <span class="score-meta-label">จุดฐานทั้งหมด</span>
+            </div>
+            <div>
+              <span class="score-meta-num rank" id="rankText">—</span>
+              <span class="score-meta-label">ระดับนักสำรวจ</span>
+            </div>
+          </div>
+        </div>
+
+        <h3 class="list-title">📖 ประวัติการทำกิจกรรม</h3>
+        <div class="history" id="history"><!-- injected --></div>
+      </section>
+
+      <!-- ============================================================= -->
+      <!-- SCREEN 4 : แลกคะแนนกับสินค้า                                    -->
+      <!-- ============================================================= -->
+      <section class="screen" id="screen-shop" aria-label="แลกของรางวัล">
+        <div class="screen-head">
+          <h2><span class="head-emoji">🎁</span> แลกของรางวัล</h2>
+          <p>ใช้คะแนนสะสมแลกสินค้าและของที่ระลึกจากบึงบัว</p>
+        </div>
+
+        <div class="mascot-tip">
+          <span class="mascot">🦩</span>
+          <p class="bubble">คะแนนไม่พอใช่ไหม? กลับไปเช็คอินจุดฐานเพิ่มได้เลย!</p>
+        </div>
+
+        <div class="shop-balance">
+          <span class="shop-balance-coin">⭐</span>
+          คะแนนที่ใช้ได้ <strong id="shopBalance">0</strong>
+        </div>
+
+        <div class="reward-grid" id="rewardGrid"><!-- injected --></div>
+      </section>
+
+    </main>
+
+    <!-- ===== Bottom navigation ===== -->
+    <nav class="tabbar">
+      <button class="tab is-active" data-target="screen-map">
+        <span class="tab-ico">🗺️</span><span>แผนที่</span>
+      </button>
+      <button class="tab" data-target="screen-learn">
+        <span class="tab-ico">📚</span><span>ความรู้</span>
+      </button>
+      <button class="tab" data-target="screen-points">
+        <span class="tab-ico">⭐</span><span>คะแนน</span>
+      </button>
+      <button class="tab" data-target="screen-shop">
+        <span class="tab-ico">🎁</span><span>แลกของ</span>
+      </button>
+    </nav>
+  </div>
+
+  <!-- ===== Station detail dialog ===== -->
+  <div class="sheet-backdrop" id="sheetBackdrop" hidden>
+    <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+      <button class="sheet-close" id="sheetClose" aria-label="ปิด">✕</button>
+      <div class="sheet-photo" id="sheetPhoto"></div>
+      <div class="sheet-grip"></div>
+      <div class="sheet-body">
+        <span class="sheet-tag" id="sheetTag">จุดฐานที่ 1</span>
+        <h3 id="sheetTitle">ชื่อจุดฐาน</h3>
+        <p class="sheet-desc" id="sheetDesc"></p>
+        <ul class="sheet-facts" id="sheetFacts"></ul>
+        <div class="sheet-reward">
+          <span>คะแนนกิจกรรม</span>
+          <strong id="sheetPoints">+0</strong>
+        </div>
+        <button class="btn-primary" id="sheetCheckin">เช็คอิน &amp; ถ่ายรูปที่จุดนี้</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" hidden></div>
+  <div class="fx-layer" id="fxLayer" aria-hidden="true"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
