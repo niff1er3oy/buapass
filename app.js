@@ -381,6 +381,108 @@ function redeem(id, btn) {
   if (card) { card.classList.add("just-won"); card.addEventListener("animationend", () => card.classList.remove("just-won"), { once: true }); }
 }
 
+/* ---- render: learn (คลังความรู้) ----------------------------- */
+let learnBuilt = false;
+let lastFact = -1;
+
+function buildLearn() {
+  if (learnBuilt) return;
+  learnBuilt = true;
+
+  shuffleFact();
+  $("#factShuffle").addEventListener("click", shuffleFact);
+
+  $("#kb").innerHTML = LEARN.map((t, i) => `
+    <div class="kb-item" data-i="${i}">
+      <button class="kb-head" aria-expanded="false">
+        <span class="kb-ico">${t.icon}</span>
+        <span class="kb-title">${t.title}</span>
+        <span class="kb-chevron">▾</span>
+      </button>
+      <div class="kb-body">${t.body}</div>
+    </div>`).join("");
+
+  $$("#kb .kb-head").forEach(head => head.addEventListener("click", () => {
+    const item = head.parentElement;
+    const open = item.classList.toggle("open");
+    head.setAttribute("aria-expanded", open ? "true" : "false");
+  }));
+
+  renderQuiz();
+}
+
+function shuffleFact() {
+  let i;
+  do { i = Math.floor(Math.random() * FACTS.length); }
+  while (i === lastFact && FACTS.length > 1);
+  lastFact = i;
+
+  const card = $("#factCard");
+  card.classList.remove("flip");
+  void card.offsetWidth;
+  card.classList.add("flip");
+  $("#factText").textContent = FACTS[i];
+}
+
+function renderQuiz() {
+  const answered = quizAnswered();
+  const all = answered === QUIZ.length;
+  const correct = quizCorrect();
+
+  let html = QUIZ.map((q, i) => {
+    const pick = store.quiz[i];
+    const done = pick !== undefined;
+    return `
+      <div class="quiz-q ${done ? "answered" : ""}">
+        <p class="quiz-title">${i + 1}. ${q.q}</p>
+        <div class="quiz-opts">
+          ${q.opts.map((o, j) => {
+            let cls = "";
+            if (done && j === q.a) cls = "correct";
+            else if (done && j === pick) cls = "wrong";
+            return `<button class="quiz-opt ${cls}" data-q="${i}" data-o="${j}" ${done ? "disabled" : ""}>${o}</button>`;
+          }).join("")}
+        </div>
+      </div>`;
+  }).join("");
+
+  if (all) {
+    html += `
+      <div class="quiz-result">
+        <p>ตอบถูก <strong>${correct}/${QUIZ.length}</strong> ข้อ</p>
+        ${store.quizClaimed
+          ? `<span class="quiz-claimed">รับโบนัสแล้ว +${store.bonus} คะแนน ✓</span>`
+          : `<button class="btn-primary" id="quizClaim">รับโบนัส +${correct * QUIZ_PTS} คะแนน</button>`}
+      </div>`;
+  } else {
+    html += `<p class="quiz-hint">ตอบให้ครบทุกข้อเพื่อรับคะแนนโบนัส (${answered}/${QUIZ.length})</p>`;
+  }
+
+  $("#quizCard").innerHTML = html;
+
+  $$("#quizCard .quiz-opt:not([disabled])").forEach(b =>
+    b.addEventListener("click", () => answerQuiz(+b.dataset.q, +b.dataset.o)));
+  const claim = $("#quizClaim");
+  if (claim) claim.addEventListener("click", claimQuiz);
+}
+
+function answerQuiz(qi, oi) {
+  if (store.quiz[qi] !== undefined) return;
+  store.quiz[qi] = oi;
+  toast(QUIZ[qi].a === oi ? "ถูกต้อง! 🎉" : "ยังไม่ถูก ลองอ่านบทความด้านบนดูนะ");
+  renderQuiz();
+}
+
+function claimQuiz() {
+  if (store.quizClaimed) return;
+  store.quizClaimed = true;
+  store.bonus = quizCorrect() * QUIZ_PTS;
+  const btn = $("#quizClaim");
+  if (btn) burstFrom(btn, 26);
+  toast(`รับโบนัส +${store.bonus} คะแนน 🧠`);
+  renderAll();
+}
+
 /* ---- bottom sheet ---------------------------------------- */
 let activeStation = null;
 
@@ -447,6 +549,7 @@ function renderAll() {
   renderMap();
   renderPoints();
   renderShop();
+  if (learnBuilt) renderQuiz();
 }
 
 /* ---- init -------------------------------------------- */
@@ -458,4 +561,5 @@ $("#sheetBackdrop").addEventListener("click", e => {
 $("#sheetCheckin").addEventListener("click", doCheckin);
 document.addEventListener("keydown", e => { if (e.key === "Escape") closeSheet(); });
 
+buildLearn();
 renderAll();
